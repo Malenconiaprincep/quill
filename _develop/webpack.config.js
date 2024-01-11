@@ -26,6 +26,7 @@ const source = [
   'test',
   'themes',
   'ui',
+  'node_modules/parchment',
 ].map(file => {
   return path.resolve(__dirname, '..', file);
 });
@@ -104,6 +105,7 @@ const baseConfig = {
       stats: 'minimal',
     },
   },
+  devtool: 'eval-cheap-source-map',
 };
 
 module.exports = env => {
@@ -120,5 +122,6 @@ module.exports = env => {
     baseConfig.module.rules[0].use[0].options.plugins = ['istanbul'];
     return baseConfig;
   }
+
   return baseConfig;
 };
