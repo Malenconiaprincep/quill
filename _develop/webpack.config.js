@@ -26,37 +26,15 @@ const source = [
   'test',
   'themes',
   'ui',
+  'node_modules/parchment',
 ].map(file => {
   return path.resolve(__dirname, '..', file);
 });
 
 const jsRules = {
-  test: /\.js$/,
+  test: /\.(j|t)s$/,
   include: source,
-  use: [
-    {
-      loader: 'babel-loader',
-      options: {
-        presets: [
-          [
-            '@babel/env',
-            {
-              targets: {
-                browsers: [
-                  'last 2 Chrome major versions',
-                  'last 2 Firefox major versions',
-                  'last 2 Safari major versions',
-                  'last 2 Edge major versions',
-                  'last 2 iOS major versions',
-                  'last 2 ChromeAndroid major versions',
-                ],
-              },
-            },
-          ],
-        ],
-      },
-    },
-  ],
+  use: ['babel-loader'],
 };
 
 const svgRules = {
@@ -78,11 +56,6 @@ const stylRules = {
   use: [MiniCssExtractPlugin.loader, 'css-loader', 'stylus-loader'],
 };
 
-const tsRules = {
-  test: /\.ts$/,
-  use: [{ loader: 'ts-loader' }],
-};
-
 const baseConfig = {
   mode: 'development',
   context: path.resolve(__dirname, '..'),
@@ -93,6 +66,7 @@ const baseConfig = {
     'quill.bubble': './assets/bubble.styl',
     'quill.snow': './assets/snow.styl',
     'unit.js': './test/unit.js',
+    'fuzz.js': './test/fuzz.ts',
   },
   output: {
     filename: '[name]',
@@ -100,12 +74,13 @@ const baseConfig = {
     libraryExport: 'default',
     libraryTarget: 'umd',
     path: path.resolve(__dirname, '../dist/'),
+    clean: true,
   },
   resolve: {
     extensions: ['.js', '.styl', '.ts'],
   },
   module: {
-    rules: [jsRules, stylRules, svgRules, tsRules],
+    rules: [jsRules, stylRules, svgRules],
     noParse: [
       /\/node_modules\/clone\/clone\.js$/,
       /\/node_modules\/eventemitter3\/index\.js$/,
@@ -130,10 +105,11 @@ const baseConfig = {
       stats: 'minimal',
     },
   },
+  devtool: 'eval-cheap-source-map',
 };
 
 module.exports = env => {
-  if (env && env.minimize) {
+  if (env?.minimize) {
     const { devServer, ...prodConfig } = baseConfig;
     return {
       ...prodConfig,
@@ -142,9 +118,10 @@ module.exports = env => {
       devtool: 'source-map',
     };
   }
-  if (env && env.coverage) {
+  if (env?.coverage) {
     baseConfig.module.rules[0].use[0].options.plugins = ['istanbul'];
     return baseConfig;
   }
+
   return baseConfig;
 };
