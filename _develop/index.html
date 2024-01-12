@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <style>
+      #editor-container {
+        height: 375px;
+      }
+    </style>
+    <link
+      href="https://cdn.quilljs.com/1.0.0/quill.snow.css"
+      rel="stylesheet"
+    />
+    <script src="./quill.js"></script>
+  </head>
+  <body>
+    <div id="editor-container"></div>
+    <script>
+      var quill = new Quill('#editor-container', {
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['image', 'code-block'],
+          ],
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow', // or 'bubble'
+      });
+    </script>
+  </body>
+</html>
